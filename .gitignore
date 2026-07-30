@@ -1,0 +1,9 @@
+.codex-deps/
+tools/
+build/
+tmp/
+downloads/
+sstate-cache/
+*.pyc
+__pycache__/
+

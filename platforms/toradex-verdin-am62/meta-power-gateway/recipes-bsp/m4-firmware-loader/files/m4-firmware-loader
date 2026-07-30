@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -eu
+
+firmware=am62-mcu-m4f0_0-fw
+remoteproc=
+
+if [ ! -r "/lib/firmware/$firmware" ]; then
+    echo "Missing /lib/firmware/$firmware" >&2
+    exit 1
+fi
+
+for candidate in /sys/class/remoteproc/remoteproc*; do
+    [ -r "$candidate/name" ] || continue
+    case "$(cat "$candidate/name")" in
+        *5000000.m4f*|*m4fss*)
+            remoteproc=$candidate
+            break
+            ;;
+    esac
+done
+
+if [ -z "$remoteproc" ]; then
+    echo "AM62 M4F RemoteProc device was not found" >&2
+    exit 1
+fi
+
+if [ "$(cat "$remoteproc/state")" = "running" ]; then
+    exit 0
+fi
+
+printf '%s\n' "$firmware" > "$remoteproc/firmware"
+printf '%s\n' start > "$remoteproc/state"
+
+attempt=0
+while [ "$attempt" -lt 50 ]; do
+    [ "$(cat "$remoteproc/state")" = "running" ] && exit 0
+    attempt=$((attempt + 1))
+    sleep 0.1
+done
+
+echo "M4F did not enter running state" >&2
+exit 1
+

@@ -1,0 +1,14 @@
+[Unit]
+Description=Load and start the Verdin AM62 M4F power alarm firmware
+After=local-fs.target
+Before=power-gateway.service
+ConditionPathExists=/lib/firmware/am62-mcu-m4f0_0-fw
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/m4-firmware-loader
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+

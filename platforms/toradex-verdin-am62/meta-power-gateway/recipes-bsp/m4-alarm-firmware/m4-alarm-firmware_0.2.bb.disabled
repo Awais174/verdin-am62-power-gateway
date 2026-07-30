@@ -1,0 +1,14 @@
+SUMMARY = "Validated power alarm firmware for the AM62 M4F"
+LICENSE = "CLOSED"
+
+SRC_URI = "file://am62-mcu-m4f0_0-fw"
+S = "${WORKDIR}"
+
+do_install() {
+    install -d ${D}${nonarch_base_libdir}/firmware
+    install -m 0644 ${WORKDIR}/am62-mcu-m4f0_0-fw \
+        ${D}${nonarch_base_libdir}/firmware/am62-mcu-m4f0_0-fw
+}
+
+FILES:${PN} = "${nonarch_base_libdir}/firmware/am62-mcu-m4f0_0-fw"
+PACKAGE_ARCH = "${MACHINE_ARCH}"

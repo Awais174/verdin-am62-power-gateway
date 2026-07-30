@@ -1,0 +1,17 @@
+table inet power_gateway {
+    chain input {
+        type filter hook input priority 0; policy drop;
+        iifname "lo" accept
+        ct state established,related accept
+        ip protocol icmp accept
+    }
+
+    chain output {
+        type filter hook output priority 0; policy drop;
+        oifname "lo" accept
+        ct state established,related accept
+        ip daddr 192.168.20.50 tcp dport 502 accept
+        udp dport 123 accept
+    }
+}
+

@@ -1,0 +1,19 @@
+{
+  "module": "Toradex Verdin AM62 V1.2",
+  "connector": "X1",
+  "sodimm_pin": 206,
+  "verdin_function": "GPIO_1",
+  "soc_ball": "B8",
+  "pad_name": "MCU_SPI0_CS1",
+  "mux_mode": 7,
+  "mux_function": "MCU_GPIO0_1",
+  "gpio_controller": "MCU_GPIO0",
+  "gpio_pin": 1,
+  "gpio_bank": 0,
+  "direction": "input",
+  "trigger": "both-edges",
+  "io_voltage_v": 1.8,
+  "linux_owners": [],
+  "m4_owner": "power-alarm"
+}
+

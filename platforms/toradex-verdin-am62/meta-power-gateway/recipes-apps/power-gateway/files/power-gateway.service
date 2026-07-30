@@ -1,0 +1,22 @@
+[Unit]
+Description=PM5560 polling and M4 alarm event service
+After=network-online.target systemd-journald.service m4-firmware-loader.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/power-gateway /etc/power-gateway/power-gateway.conf
+Restart=on-failure
+RestartSec=2
+RuntimeDirectory=power-gateway
+RuntimeDirectoryMode=0755
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/run/power-gateway
+DeviceAllow=/dev/rpmsg0 rw
+DeviceAllow=/dev/rpmsg_ctrl0 rw
+
+[Install]
+WantedBy=multi-user.target
