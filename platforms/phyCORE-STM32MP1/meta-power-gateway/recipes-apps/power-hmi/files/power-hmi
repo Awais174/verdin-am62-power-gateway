@@ -1,0 +1,44 @@
+#!/bin/sh
+
+STATUS_FILE=/run/power-gateway/status
+TTY=/dev/tty1
+
+[ -w "$TTY" ] || exit 0
+
+while true; do
+    METER=STARTING
+    M4=STARTING
+    ALARM=UNKNOWN
+    DETAIL="Waiting for gateway status"
+
+    if [ -r "$STATUS_FILE" ]; then
+        while IFS='=' read -r key value; do
+            case "$key" in
+                METER) METER=$value ;;
+                M4) M4=$value ;;
+                ALARM) ALARM=$value ;;
+                DETAIL) DETAIL=$value ;;
+            esac
+        done < "$STATUS_FILE"
+    fi
+
+    if [ "$ALARM" = "ACTIVE" ]; then
+        COLOR='\033[37;41m'
+    else
+        COLOR='\033[30;47m'
+    fi
+
+    {
+        printf '\033[2J\033[H%b' "$COLOR"
+        printf '%-50s\n' 'POWER GATEWAY'
+        printf '%-50s\n' "Meter: $METER     M4 link: $M4"
+        printf '%-50s\n' ''
+        printf '%-50s\n' "Alarm: $ALARM"
+        printf '%-50s\n' "$DETAIL"
+        printf '%-50s\n' ''
+        printf '%-50s\n' "$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        printf '\033[0m'
+    } > "$TTY"
+
+    sleep 1
+done

@@ -1,0 +1,13 @@
+[Unit]
+Description=Load STM32MP157C Cortex-M4 power alarm firmware
+ConditionPathExists=/lib/firmware/power-alarm-m4.elf
+After=local-fs.target
+Before=power-gateway.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/stm32-m4-firmware-loader
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

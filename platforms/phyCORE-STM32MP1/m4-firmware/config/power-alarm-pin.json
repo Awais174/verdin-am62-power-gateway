@@ -1,0 +1,17 @@
+{
+  "platform": "PHYTEC phyCORE-STM32MP1 on phyBOARD-Sargas",
+  "carrier_connector": "X3 Arduino",
+  "carrier_pin": "interface pin 8 (D7)",
+  "ground_pin": "interface pin 15 (GND)",
+  "carrier_signal": "X_DFSDM1_DATIN0/PG0",
+  "soc_gpio_port": "GPIOG",
+  "soc_gpio_pin": 0,
+  "exti_line": 0,
+  "voltage": "3.3V",
+  "direction": "input",
+  "bias": "pull-down",
+  "active_level": "high",
+  "interrupt_edges": "both",
+  "owner": "Cortex-M4",
+  "linux_policy": "reserved through m4_system_resources/rproc-srm"
+}

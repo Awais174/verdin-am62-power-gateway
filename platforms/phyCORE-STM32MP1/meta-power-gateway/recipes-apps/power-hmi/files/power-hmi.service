@@ -1,0 +1,17 @@
+[Unit]
+Description=Power gateway console HMI
+After=power-gateway.service
+Wants=power-gateway.service
+Conflicts=getty@tty1.service
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/power-hmi
+Restart=on-failure
+RestartSec=2
+StandardInput=null
+StandardOutput=journal
+TTYPath=/dev/tty1
+
+[Install]
+WantedBy=multi-user.target

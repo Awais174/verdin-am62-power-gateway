@@ -1,0 +1,48 @@
+#!/bin/sh
+set -eu
+
+FIRMWARE=power-alarm-m4.elf
+FIRMWARE_PATH=/lib/firmware/$FIRMWARE
+REMOTE=
+
+if [ ! -r "$FIRMWARE_PATH" ]; then
+    echo "Missing Cortex-M4 firmware: $FIRMWARE_PATH" >&2
+    exit 1
+fi
+
+for candidate in /sys/class/remoteproc/remoteproc*; do
+    [ -r "$candidate/name" ] || continue
+    name=$(cat "$candidate/name")
+    case "$name" in
+        *m4*|*M4*|*stm32*)
+            REMOTE=$candidate
+            break
+            ;;
+    esac
+done
+
+if [ -z "$REMOTE" ]; then
+    echo "STM32MP1 Cortex-M4 RemoteProc node was not found." >&2
+    exit 1
+fi
+
+state=$(cat "$REMOTE/state")
+if [ "$state" = "running" ]; then
+    exit 0
+fi
+
+if [ "$state" != "detached" ]; then
+    printf '%s' "$FIRMWARE" > "$REMOTE/firmware"
+fi
+printf start > "$REMOTE/state"
+
+attempt=0
+while [ "$attempt" -lt 50 ]; do
+    state=$(cat "$REMOTE/state")
+    [ "$state" = "running" ] && exit 0
+    attempt=$((attempt + 1))
+    sleep 0.1
+done
+
+echo "Cortex-M4 failed to enter running state; state=$state" >&2
+exit 1

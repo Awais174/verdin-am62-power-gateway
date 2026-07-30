@@ -1,0 +1,45 @@
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/pinctrl/stm32-pinfunc.h>
+
+/ {
+    compatible = "phytec,stm32mp157c-phycore-som",
+                 "st,stm32mp157";
+
+    fragment@0 {
+        target = <&pinctrl>;
+
+        __overlay__ {
+            m4_power_alarm_pins: m4-power-alarm-pins {
+                pins {
+                    pinmux = <STM32_PINMUX('G', 0, RSVD)>;
+                };
+            };
+        };
+    };
+
+    fragment@1 {
+        target = <&m4_rproc>;
+
+        __overlay__ {
+            firmware-name = "power-alarm-m4.elf";
+            status = "okay";
+
+            m4_system_resources {
+                status = "okay";
+
+                power-alarm {
+                    compatible = "rproc-srm-dev";
+                    interrupt-parent = <&gpiog>;
+                    interrupts = <0 IRQ_TYPE_EDGE_BOTH>;
+                    interrupt-names = "irq";
+                    pinctrl-names = "rproc_default";
+                    pinctrl-0 = <&m4_power_alarm_pins>;
+                    status = "okay";
+                };
+            };
+        };
+    };
+};
